@@ -7,7 +7,18 @@
 ```
 sbt run
 ```
-and then in the terminal 
+
+#### Web UI
+
+Open http://localhost:8080 in a browser. Pick a preset city, type a latitude/longitude,
+or use "Use my location" (US locations only, since the data comes from the NWS).
+
+The UI is written in Scala.js with Laminar (`frontend/`). `sbt run` compiles it and the
+server serves it automatically; no separate build step is needed.
+
+#### API
+
+Or in the terminal 
 ```
 # Kansas (random US center point)
 curl "http://localhost:8080/forecast?lat=39.7456&lon=-97.0892"
@@ -64,6 +75,8 @@ HTTP: `http4s 0.23` — HTTP library
 `Ember server` (non-blocking, built on `fs2`)
 `Ember client` (for outbound calls to the NWS API)
 JSON: `Circe` — automatic json codec 
+
+Frontend: `Scala.js` + `Laminar` — compiled to `main.js` and served by the http4s server
 
 Testing: `MUnit` with `munit-cats-effect` for IO-based assertions
 

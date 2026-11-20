@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather</title>
+  <style>
+    :root {
+      --bg: #f4f6f9; --surface: #ffffff; --text: #1d2330; --muted: #6b7280;
+      --border: #dde2ea; --accent: #2563eb; --accent-text: #ffffff;
+      --hot: #dc2626; --cold: #2563eb; --moderate: #059669; --error: #b91c1c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111418; --surface: #1b2027; --text: #e6e9ee; --muted: #9aa3af;
+        --border: #2d3440; --accent: #3b82f6; --accent-text: #ffffff;
+        --hot: #f87171; --cold: #60a5fa; --moderate: #34d399; --error: #f87171;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    .container { max-width: 520px; margin: 0 auto; padding: 40px 16px; }
+    h1 { margin: 0 0 4px; font-size: 28px; }
+    .subtitle { margin: 0 0 24px; color: var(--muted); font-size: 14px; }
+    button {
+      font: inherit; border-radius: 8px; padding: 8px 14px; cursor: pointer;
+      border: 1px solid var(--accent); background: var(--accent); color: var(--accent-text);
+    }
+    button.secondary, button.chip { background: var(--surface); color: var(--text); border-color: var(--border); }
+    button:disabled { opacity: .5; cursor: default; }
+    .cities { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .chip { border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+    .coords { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .coords label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+    .coords input {
+      font: inherit; padding: 8px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    }
+    .actions { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; text-align: center;
+    }
+    .card.muted { color: var(--muted); }
+    .card.error { color: var(--error); }
+    .temp { font-size: 56px; font-weight: 600; line-height: 1.1; }
+    .desc { margin: 8px 0 14px; font-size: 18px; }
+    .badge {
+      display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: 13px;
+      text-transform: capitalize; border: 1px solid currentColor;
+    }
+    .badge.hot { color: var(--hot); }
+    .badge.cold { color: var(--cold); }
+    .badge.moderate { color: var(--moderate); }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="/main.js"></script>
+</body>
+</html>

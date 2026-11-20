@@ -1,6 +1,7 @@
 package weatherapp
 
 import cats.effect.{IO, IOApp}
+import cats.implicits._
 import com.comcast.ip4s._
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
@@ -15,7 +16,7 @@ object Main extends IOApp.Simple {
       .use { client =>
         val weatherService = WeatherService.impl[IO](client)
         val httpApp        = Logger.httpApp(logHeaders = true, logBody = false)(
-          WeatherRoutes.routes[IO](weatherService).orNotFound
+          (WeatherRoutes.routes[IO](weatherService) <+> StaticRoutes.routes[IO]).orNotFound
         )
 
         EmberServerBuilder
