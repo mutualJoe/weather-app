@@ -10,8 +10,9 @@ sbt run
 
 #### Web UI
 
-Open http://localhost:8080 in a browser. Pick a preset city, type a latitude/longitude,
-or use "Use my location" (US locations only, since the data comes from the NWS).
+Open http://localhost:8080 in a browser. Search for a city/town/village by name (suggestions
+appear as you type; add a state to narrow it down, e.g. `Springfield, IL`), pick a preset city,
+type a latitude/longitude, or use "Use my location" (US locations only, since the data comes from the NWS).
 
 The UI is written in Scala.js with Laminar (`frontend/`). `sbt run` compiles it and the
 server serves it automatically; no separate build step is needed.
@@ -33,6 +34,13 @@ curl "http://localhost:8080/forecast?lat=25.7617&lon=-80.1918"
 curl "http://localhost:8080/forecast?lat=37.7749&lon=-122.4194"
 ```
 or just make GET requests to these urls
+
+To look up coordinates by place name (uses the free [Open-Meteo geocoding API](https://open-meteo.com/en/docs/geocoding-api), no key needed):
+```
+curl "http://localhost:8080/geocode?q=Springfield"       # all US Springfields
+curl "http://localhost:8080/geocode?q=Springfield,%20IL" # narrowed to Illinois
+```
+returns a list of `{"name", "state", "county", "lat", "lon"}`.
 
 So first we go to google.com and put requests like `san francisco lat and long`
 

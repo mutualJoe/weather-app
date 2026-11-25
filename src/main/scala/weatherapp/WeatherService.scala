@@ -16,12 +16,16 @@ object WeatherService {
   private val NwsBase   = "https://api.weather.gov"
   private val UserAgent = Header.Raw(CIString("User-Agent"), "(weather-app, contact@weather-app.local)")
 
+  private def round4(d: Double): String =
+    BigDecimal(d).setScale(4, BigDecimal.RoundingMode.HALF_UP).bigDecimal.stripTrailingZeros.toPlainString
+
   def impl[F[_]: Concurrent](client: Client[F]): WeatherService[F] =
     new WeatherService[F] {
 
       override def forecast(lat: Double, lon: Double): F[WeatherResponse] =
         for {
-          pointsUri <- Concurrent[F].fromEither(Uri.fromString(s"$NwsBase/points/$lat,$lon"))
+          // NWS answers 301 for coordinates with more than 4 decimal places, so round first.
+          pointsUri <- Concurrent[F].fromEither(Uri.fromString(s"$NwsBase/points/${round4(lat)},${round4(lon)}"))
           points <- client.expect[NwsPointsResponse](Request[F](uri = pointsUri).putHeaders(UserAgent))
           forecastUri <- Concurrent[F].fromEither(Uri.fromString(points.properties.forecast))
           fc <- client.expect[NwsForecastResponse](Request[F](uri = forecastUri).putHeaders(UserAgent))

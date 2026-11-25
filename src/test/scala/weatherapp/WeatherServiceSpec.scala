@@ -78,4 +78,32 @@ class WeatherServiceSpec extends CatsEffectSuite {
       assertEquals(resp.status, Status.NotFound)
     }
   }
+
+  // ── Geocoding ─────────────────────────────────────────────────
+
+  test("parseQuery: name only") {
+    assertEquals(GeocodingService.parseQuery("  Springfield "), ("Springfield", None))
+  }
+
+  test("parseQuery: expands state abbreviations, keeps full names") {
+    assertEquals(GeocodingService.parseQuery("Springfield, il"), ("Springfield", Some("Illinois")))
+    assertEquals(GeocodingService.parseQuery("Springfield, Missouri"), ("Springfield", Some("Missouri")))
+  }
+
+  test("GET /geocode returns the matching places") {
+    val stub = new GeocodingService[IO] {
+      def search(query: String): IO[List[Place]] =
+        IO.pure(List(Place("Springfield", Some("Illinois"), Some("Sangamon"), 39.8, -89.6)))
+    }
+    val req = Request[IO](Method.GET, uri"/geocode?q=Springfield")
+
+    GeocodeRoutes.routes[IO](stub).orNotFound.run(req).flatMap { resp =>
+      IO(assertEquals(resp.status, Status.Ok)) *> resp.as[Json].map { json =>
+        val first = json.hcursor.downN(0)
+        assertEquals(first.get[String]("name").toOption, Some("Springfield"))
+        assertEquals(first.get[String]("state").toOption, Some("Illinois"))
+        assertEquals(first.get[Double]("lat").toOption, Some(39.8))
+      }
+    }
+  }
 }

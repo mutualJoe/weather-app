@@ -15,8 +15,11 @@ object Main extends IOApp.Simple {
       .build
       .use { client =>
         val weatherService = WeatherService.impl[IO](client)
+        val geocodingService = GeocodingService.impl[IO](client)
         val httpApp        = Logger.httpApp(logHeaders = true, logBody = false)(
-          (WeatherRoutes.routes[IO](weatherService) <+> StaticRoutes.routes[IO]).orNotFound
+          (WeatherRoutes.routes[IO](weatherService) <+>
+            GeocodeRoutes.routes[IO](geocodingService) <+>
+            StaticRoutes.routes[IO]).orNotFound
         )
 
         EmberServerBuilder
